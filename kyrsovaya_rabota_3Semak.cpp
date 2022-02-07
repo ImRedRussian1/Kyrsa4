@@ -6,33 +6,77 @@
 
 using namespace std;
 
-class Students {
+
+class Students() { // warrior in past
+private:
+    char name[32];
+    char surname[32];
+    int groupNumber;
+    int visitDates[100];
+    int visitDatesIndex = 0;
+    int AmountOfStudentsInGroup = 5;
+
 public:
-    char name[20];
-    int hp;
-    int mana;
-    int VisitIndividual; // посещение индивидуальных занятий
-    int VisitCollective; // посещения коллективных занятий
-    int GroupNumber; // номер группы
-    int AmountOfVisits;
-    int* ArrayOfVisits = new int[AmountOfVisits]; // массив дат посещения занятий
-    Students() {
+
+    Student() {}
+
+    Student(char name[], char surname[], int groupNumber) {
+        this->name = name;
+        this->surname = surname;
+        this->groupNumber = groupNumber;
+    }
+
+    void addDate(int date) {
+        visitDates[visitDatesIndex] = date;
+        visitDatesIndex++;
     }
 
 
-    Students(Students* el) {
-        // copy constructor
-        strcpy_s(this->name, el->name);
-        this->hp = el->hp;
-        this->mana = el->mana;
+    bool visited(int date) {
+        for (int i = 0; i < visitDatesIndex; i++) {
+            if (visitDates[i] == date)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    void Print() {
-        cout << "\tName: " << name << endl;
-        cout << "\tHp: " << hp << endl;
-        cout << "\tMana: " << mana << endl;
+
+}
+
+
+
+class Visits { // Squad in past
+private:
+    Students* students;
+    int size = 10;
+    int index = 0;
+
+public:
+    Visits() {
+        students = new Student[this->size];
     }
+
+    int WriteToFile();
+    int ReadFromFile();
+    bool Add(Student student);
+    bool Add(Student petrov, int pos);
+
+    bool AddVisitToStudent(char surname, int date);// должна найти в списке студентов данного с данной фамилией и вызвать функцию addDate для него или вернуть что такого студента нет
+    bool AddVisitToStudents(char surnames[], int date);// внутри в цикле будет вызываться функиця AddVisitToStudent для каждой фамилии
+
+    void sortingBySurname();
+    void sortingByAmountOfVisits(); //сортировка по visitDatesIndex в классе студента
+
+    void printStudentsByDate(int date); //бежишь по списку студентов и смотришь есть ли дата в массиве с датами (функция visited)
+
+    Students Pop(int pos);
+    bool Delete(int pos);
+    void Show();
 };
+
+
 
 
 class Squad {
@@ -88,7 +132,25 @@ public:
         return 0;
     }
 
-    bool Add(Students warrior) {    // добавление элемента в конец структуры
+    bool AddVisitToStudent(char surname, int date) {
+        if individualMath.Visit(char surname, int date) == ("Danil", "Karpenko", 141206) {
+            student.addDate("Danil", "Karpenko", 141218);
+        };
+        else { cout << "такого студента нет " << endl; }
+    }
+
+    bool AddVisitToStudents(char surnames[], int date) {
+        for (int i = 0; i < AmountOfStudentsInGroup; i++) {
+            if ((groupMath.Visit(char surname, int date) == ("Danil", "Karpenko", 141218)) && (groupMath.Visit(char surname, int date) == ("Nikolay", "Velikii", 141218))) {
+                student.AddVisitToStudent("Danil", "Karpenko", 141218);
+                student.AddVisitToStudent("Nikolay", "Velikii", 141218);
+            }
+        }
+    }
+    void printStudentsByDate(int date) {
+        if visitDates[visitDatesIndex] == date { cout << visitDates[visitDatesIndex] << " "; }
+    }
+    bool Add(Students student) {    // добавление элемента в конец структуры
         if (this->index >= this->size) {
             this->size *= 2;
             Students* tmp = new Students[this->size];
@@ -98,7 +160,7 @@ public:
             delete[] students;
             students = tmp;
         }
-        students[index] = new Students(warrior);
+        students[index] = new Students(student);
         index++;
         return true;
     }
@@ -107,7 +169,7 @@ public:
         Students temp; // временная штука для хранения массива
         for (int i = 0; i < size - 1; i++) {
             for (int j = 0; j < size - i - 1; j++) {
-                if (students[j].AmountOfVisits > students[j + 1].AmountOfVisits) {
+                if (students[j].visitDatesIndex > students[j + 1].visitDatesIndex) {
                     // меняем элементы местами
                     temp = students;
                     students[j] = students[j + 1];
@@ -197,8 +259,19 @@ void test_read() {
 
 int main() {
 
-    test_write();
-    //    test_read();
+    // test_write();
+    // //    test_read();
+    Visits individualMath = new Visits();
+    Visits groupMath = new Visits();
+
+    individualMath.Add(new Student("Danil", "Karpenko", 141206));
+    groupMath.Add(new Student("Danil", "Karpenko", 141206));
+   
+    individualMath.Add(new Student("Vasya", "Krasnov", 141206));
+    individualMath.Add(new Student("Petya", "Mesnikan", 141206));
+
+    individualMath.Add(new Student("Nikolay", "Velikii", 141218));
+    groupMath.Add(new Student("Nikolay", "Velikii", 141218));
 
 
     return 0;
